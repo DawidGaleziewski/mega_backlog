@@ -1,14 +1,14 @@
 # mega_backlog
 
-Tickets split out of the support desk's ticket **#4471** ("dates parse mm/dd in eu locales", 412 reports, marked known), and the kb page about them. MEGA.dev Challenge S01E03 *what it shows*.
+Tickets split out of the support desk's ticket **#4471** ("dates parse mm/dd in eu locales", 412 reports, marked known), and the kb page about them. #4471 itself was closed by engineering on 5 Oct. MEGA.dev Challenge S01E03 *what it shows*.
 
 ## Tickets
 
-| # | Problem | Reports |
-|---|---|---|
-| [#1](https://github.com/DawidGaleziewski/mega_backlog/issues/1) | Date parser reads day-first dates month first: day and month swap | 379 |
-| [#2](https://github.com/DawidGaleziewski/mega_backlog/issues/2) | booking-v3 form hint says MM/DD/YYYY but the form reads day first | 33 |
-| [#3](https://github.com/DawidGaleziewski/mega_backlog/issues/3) | Dates move by exactly one day, not a day/month swap | 5 |
+| # | Problem | Reports | State |
+|---|---|---|---|
+| [#1](https://github.com/DawidGaleziewski/mega_backlog/issues/1) | Date parser reads day-first dates month first: day and month swap | 379 | closed: fixed ("fix(dates): parse dd/mm for eu locales") |
+| [#2](https://github.com/DawidGaleziewski/mega_backlog/issues/2) | booking-v3 form hint says MM/DD/YYYY but the form reads day first | 33 | closed: won't fix (booking-v3 form retired) |
+| [#3](https://github.com/DawidGaleziewski/mega_backlog/issues/3) | Dates move by exactly one day, not a day/month swap | 5 | **open**: the parser fix does not cover a one-day move |
 
 412 unique reports (the export has 427 rows; 15 ids appear twice). Counted the desk's way, by tenant: 379 + 33 = 412; the 5 one-day reports of #3 are among the 379, where the desk files them.
 

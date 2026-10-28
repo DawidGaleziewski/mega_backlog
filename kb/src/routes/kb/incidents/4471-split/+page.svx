@@ -16,16 +16,21 @@ signature: Dawid Galeziewski
 
 [#4471](/kb/incidents/4471) says every report about a wrong date is one bug: the parser reads
 dates month first. Reading the reports by tenant, channel and what each one says shows three
-problems with three different fixes. Each now has its own ticket.
+problems with three different fixes. Each has its own ticket.
+
+Engineering closed #4471 on 5 October: the parser is fixed, and the booking-v3 hint won't be
+fixed because the form is retired. Neither covers the third problem.
 
 <Callout kind="warn">
-Fixing the parser closes only the first row. The other two stay open until their own fixes ship.
+#4471 is closed, but not every report in it is. The reports where a date moves by one day are
+still open: the parser fix changes the day/month order, not the time zone.
 </Callout>
 
 ## The three problems
 
 <SplitTable
   ticket={4471}
+  status={{ parser: 'fixed', hint: "won't fix" }}
   issues={{
     parser: 'https://github.com/DawidGaleziewski/mega_backlog/issues/1',
     hint: 'https://github.com/DawidGaleziewski/mega_backlog/issues/2',
@@ -33,14 +38,16 @@ Fixing the parser closes only the first row. The other two stay open until their
   }}
 />
 
-1. **The parser reads month first** ([#1](https://github.com/DawidGaleziewski/mega_backlog/issues/1)).
+1. **The parser reads month first** ([#1](https://github.com/DawidGaleziewski/mega_backlog/issues/1), fixed:
+   "fix(dates): parse dd/mm for eu locales").
    Every tenant on file writes the day first. A date with a day of 12 or less comes out with day
    and month swapped: 7 April becomes 4 July. It reaches the desk through every channel.
-2. **The booking-v3 hint says `MM/DD/YYYY`** ([#2](https://github.com/DawidGaleziewski/mega_backlog/issues/2)).
+2. **The booking-v3 hint says `MM/DD/YYYY`** ([#2](https://github.com/DawidGaleziewski/mega_backlog/issues/2), won't fix:
+   the form is retired).
    The form reads the date the tenant's way, day first, but tells people to type the month
    first. They do as told, and the date swaps. Same symptom as the parser, different cause:
    only reports sent through a booking-v3 form, and the parser fix does not touch it.
-3. **The date moves by one day** ([#3](https://github.com/DawidGaleziewski/mega_backlog/issues/3)).
+3. **The date moves by one day** ([#3](https://github.com/DawidGaleziewski/mega_backlog/issues/3), open).
    Tuesday shows as Monday; a meeting goes out as Tuesday in Lisbon and Monday in Toronto; an
    invite arrives before the booking. That is time-zone handling, not a swap. The desk had
    already noted these reports as read differently (`desk-notes.json`), but filed them under

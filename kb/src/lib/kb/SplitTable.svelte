@@ -15,7 +15,12 @@
     unplaced: 'no cause on file',
   };
 
-  let { ticket, issues }: { ticket: number; issues: Partial<Record<Problem, string>> } = $props();
+  // `status`: what engineering decided per problem, in the desk's words; a problem without one is still open.
+  let {
+    ticket,
+    issues,
+    status = {},
+  }: { ticket: number; issues: Partial<Record<Problem, string>>; status?: Partial<Record<Problem, string>> } = $props();
 
   const merged = $derived(uniqueById(reports as Report[]).filter((r) => r.mergedInto === ticket));
   const causeRow = (r: Report): Problem => causeOf(r, tenantOf(r)) ?? 'unplaced';
@@ -41,21 +46,22 @@
 
 <p class="sum">
   <strong>{merged.length}</strong> reports merged into #{ticket} ·
-  <strong>{rows.length}</strong> problems · <strong>{rows.filter((r) => issues[r.problem]).length}</strong> with a ticket of their own
+  <strong>{rows.length}</strong> problems · <strong>{rows.filter((r) => !status[r.problem]).length}</strong> still open
 </p>
 
 <table>
   <thead>
-    <tr><th>problem</th><th>reports</th><th>tenants</th><th>channels</th><th>seen</th><th>ticket</th></tr>
+    <tr><th>problem</th><th>reports</th><th>tenants</th><th>channels</th><th>seen</th><th>status</th><th>ticket</th></tr>
   </thead>
   <tbody>
     {#each rows as r (r.problem)}
-      <tr class:open={!issues[r.problem]}>
+      <tr class:open={!status[r.problem]}>
         <td>{LABEL[r.problem]}</td>
         <td>{r.n}</td>
         <td>{r.tenants}</td>
         <td>{r.channels}</td>
         <td>{r.first} → {r.last}</td>
+        <td>{status[r.problem] ?? 'open'}</td>
         <td>
           {#if issues[r.problem]}<a href={issues[r.problem]}>#{issueNo(issues[r.problem])}</a>{:else}none yet{/if}
         </td>
@@ -75,5 +81,5 @@
   .sum { font-size: 1.1rem; }
   .note { color: var(--muted); font-size: 0.85em; }
   .open td { background: var(--warn-bg); }
-  .open td:last-child { color: var(--warn); font-weight: 600; }
+  .open td:nth-last-child(2) { color: var(--warn); font-weight: 600; }
 </style>
