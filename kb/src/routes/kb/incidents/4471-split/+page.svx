@@ -4,7 +4,7 @@ title: '#4471 is three problems, not one'
 owner: Dawid Galeziewski
 status: proposed
 reviewed: 2026-10-28
-signature: Dawid Galeziewski
+signature: v1.eyJzdWIiOiIxOTE2IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTMyMTc5NzYsImV4cCI6MTc5MzMwNDM3Nn0.CvvFzI2FZ5zLzEkns3njV_4iRNZI5yxH8mof_4yjPYE
 ---
 
 <script>

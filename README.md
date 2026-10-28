@@ -14,7 +14,7 @@ Tickets split out of the support desk's ticket **#4471** ("dates parse mm/dd in 
 
 ## The kb page
 
-- Source (.svx): [`kb/src/routes/kb/incidents/4471-split/+page.svx`](kb/src/routes/kb/incidents/4471-split/+page.svx), signed `Dawid Galeziewski` (desk ref `DR-40PV-1MBD`).
+- Source (.svx): [`kb/src/routes/kb/incidents/4471-split/+page.svx`](kb/src/routes/kb/incidents/4471-split/+page.svx), signed with the course ticket from start-challenge as `signature:` (desk ref `DR-TZHM-XN78`); owner Dawid Galeziewski.
 - Its table component: [`kb/src/lib/kb/SplitTable.svelte`](kb/src/lib/kb/SplitTable.svelte). It computes the three counts from the kb's data with the kb's own `causes.ts` and the desk's `desk-notes.json`; no number is typed into the page.
 - As the desk sees it: [`rendered/kb/incidents/4471-split.html`](rendered/kb/incidents/4471-split.html) (built site, CSS inlined) and a screenshot, [`rendered/4471-split.png`](rendered/4471-split.png).
 
