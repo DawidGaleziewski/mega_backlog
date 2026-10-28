@@ -1,0 +1,67 @@
+---
+layout: runbook
+title: '#4471 is three problems, not one'
+owner: Dawid Galeziewski
+status: proposed
+reviewed: 2026-10-28
+signature: Dawid Galeziewski
+---
+
+<script>
+  import SplitTable from '#lib/kb/SplitTable.svelte';
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) says every report about a wrong date is one bug: the parser reads
+dates month first. Reading the reports by tenant, channel and what each one says shows three
+problems with three different fixes. Each now has its own ticket.
+
+<Callout kind="warn">
+Fixing the parser closes only the first row. The other two stay open until their own fixes ship.
+</Callout>
+
+## The three problems
+
+<SplitTable
+  ticket={4471}
+  issues={{
+    parser: 'https://github.com/DawidGaleziewski/mega_backlog/issues/1',
+    hint: 'https://github.com/DawidGaleziewski/mega_backlog/issues/2',
+    oneDayMove: 'https://github.com/DawidGaleziewski/mega_backlog/issues/3',
+  }}
+/>
+
+1. **The parser reads month first** ([#1](https://github.com/DawidGaleziewski/mega_backlog/issues/1)).
+   Every tenant on file writes the day first. A date with a day of 12 or less comes out with day
+   and month swapped: 7 April becomes 4 July. It reaches the desk through every channel.
+2. **The booking-v3 hint says `MM/DD/YYYY`** ([#2](https://github.com/DawidGaleziewski/mega_backlog/issues/2)).
+   The form reads the date the tenant's way, day first, but tells people to type the month
+   first. They do as told, and the date swaps. Same symptom as the parser, different cause:
+   only reports sent through a booking-v3 form, and the parser fix does not touch it.
+3. **The date moves by one day** ([#3](https://github.com/DawidGaleziewski/mega_backlog/issues/3)).
+   Tuesday shows as Monday; a meeting goes out as Tuesday in Lisbon and Monday in Toronto; an
+   invite arrives before the booking. That is time-zone handling, not a swap. The desk had
+   already noted these reports as read differently (`desk-notes.json`), but filed them under
+   the parser by tenant.
+
+## Why they were merged
+
+The desk merges on subject alone ([decision 0001](/kb/decisions/0001-dedupe-by-subject)), and
+nobody reads the body. People with all three problems write the same subjects: "Wrong day on
+the invite", "Date is wrong". The cause depends on the tenant (its locale and booking form), the
+channel, and what the body describes; intake's tag is a guess from the browser and often
+disagrees. The table #4471 shows already puts the hint reports apart from the parser:
+
+<CauseTable ticket={4471} />
+
+## For the desk
+
+- When a report about a date comes in, look at the tenant, the channel and the two dates in
+  the body before merging: a day/month swap and a one-day move are different tickets.
+- The ticket export pages overlap; count each report id once.
+- Decision 0001 stays as it is: it is accepted. Replacing it with a rule that reads the cause
+  is a new decision record.
+
+<RenderStamp {signature} />
