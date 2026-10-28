@@ -6,11 +6,11 @@ Tickets split out of the support desk's ticket **#4471** ("dates parse mm/dd in 
 
 | # | Problem | Reports |
 |---|---|---|
-| [#1](https://github.com/DawidGaleziewski/mega_backlog/issues/1) | Date parser reads day-first dates month first: day and month swap | 374 |
+| [#1](https://github.com/DawidGaleziewski/mega_backlog/issues/1) | Date parser reads day-first dates month first: day and month swap | 379 |
 | [#2](https://github.com/DawidGaleziewski/mega_backlog/issues/2) | booking-v3 form hint says MM/DD/YYYY but the form reads day first | 33 |
 | [#3](https://github.com/DawidGaleziewski/mega_backlog/issues/3) | Dates move by exactly one day, not a day/month swap | 5 |
 
-374 + 33 + 5 = 412 unique reports (the export has 427 rows; 15 ids appear twice).
+412 unique reports (the export has 427 rows; 15 ids appear twice). Counted the desk's way, by tenant: 379 + 33 = 412; the 5 one-day reports of #3 are among the 379, where the desk files them.
 
 ## The kb page
 

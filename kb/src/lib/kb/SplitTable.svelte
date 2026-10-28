@@ -4,8 +4,9 @@
   import { causeOf, uniqueById, type Report } from '#lib/kb/causes';
   import { tenantOf } from '#lib/kb/locales';
 
-  // One row per problem merged into the ticket. The desk's one-day-move note takes a report out of
-  // its tenant's cause: a date one day off is not a day/month swap, whatever the tenant writes.
+  // One row per problem merged into the ticket, counted the desk's way: a report is counted under its
+  // tenant's cause (causes.ts). The desk's one-day-move note (desk-notes.json) is a problem of its own
+  // with its own ticket, but its reports stay counted where they are filed, as CauseTable does.
   type Problem = 'parser' | 'hint' | 'oneDayMove' | 'unplaced';
   const LABEL: Record<Problem, string> = {
     parser: 'day and month swap: the parser reads month first',
@@ -17,12 +18,13 @@
   let { ticket, issues }: { ticket: number; issues: Partial<Record<Problem, string>> } = $props();
 
   const merged = $derived(uniqueById(reports as Report[]).filter((r) => r.mergedInto === ticket));
-  const problemOf = (r: Report): Problem =>
-    notes.oneDayMove.includes(r.id) ? 'oneDayMove' : (causeOf(r, tenantOf(r)) ?? 'unplaced');
+  const causeRow = (r: Report): Problem => causeOf(r, tenantOf(r)) ?? 'unplaced';
 
   const rows = $derived.by(() => {
     const by = new Map<Problem, Report[]>();
-    for (const r of merged) by.set(problemOf(r), [...(by.get(problemOf(r)) ?? []), r]);
+    for (const r of merged) by.set(causeRow(r), [...(by.get(causeRow(r)) ?? []), r]);
+    const moved = merged.filter((r) => notes.oneDayMove.includes(r.id));
+    if (moved.length) by.set('oneDayMove', moved);
     return [...by.entries()]
       .map(([problem, rs]) => {
         const days = rs.map((r) => r.receivedAt.slice(0, 10)).sort();
@@ -31,6 +33,9 @@
       })
       .sort((a, b) => b.n - a.n);
   });
+  const movedFrom = $derived(
+    [...new Set(merged.filter((r) => notes.oneDayMove.includes(r.id)).map(causeRow))].map((c) => LABEL[c]),
+  );
   const issueNo = (url?: string) => url?.match(/(\d+)$/)?.[1];
 </script>
 
@@ -59,8 +64,16 @@
   </tbody>
 </table>
 
+{#if rows.some((r) => r.problem === 'oneDayMove')}
+  <p class="note">
+    The {rows.find((r) => r.problem === 'oneDayMove')?.n} one-day reports are also counted in the row they are filed under
+    ({movedFrom.join(', ')}), as the desk counts them; the rows add up to more than {merged.length}.
+  </p>
+{/if}
+
 <style>
   .sum { font-size: 1.1rem; }
+  .note { color: var(--muted); font-size: 0.85em; }
   .open td { background: var(--warn-bg); }
   .open td:last-child { color: var(--warn); font-weight: 600; }
 </style>
